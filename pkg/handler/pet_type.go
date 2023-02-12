@@ -10,6 +10,7 @@ import (
 func (h *Handler) getAllTypes(c *gin.Context) {
 	query := c.Request.URL.Query()
 	filter := pet_service.PetTypeFilter{}
+
 	if query.Has("id") {
 		PetTypeId, err := strconv.Atoi(query.Get("id"))
 		if err != nil || PetTypeId <= 0 {
@@ -18,6 +19,7 @@ func (h *Handler) getAllTypes(c *gin.Context) {
 		}
 		filter.PetTypeId = PetTypeId
 	}
+
 	if query.Has("pet_type") {
 		filter.PetType = query.Get("pet_type")
 	}
