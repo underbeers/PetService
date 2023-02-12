@@ -20,7 +20,7 @@ CREATE TABLE pet_card
     breed_id      int references breed (id) ON DELETE CASCADE,
     photo         varchar(255),
     birth_date    timestamp,
-    gender        boolean,
+    male          boolean,
     color         varchar(255),
     care          varchar(255),
     pet_character varchar(255),

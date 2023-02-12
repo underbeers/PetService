@@ -30,11 +30,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		petCards := api.Group("petCards")
 		{
-			petCards.POST("/", h.createNewCard)
+			petCards.POST("/new/", h.createNewCard)
 			petCards.GET("/", h.getAllCards)
 			petCards.GET("/main/", h.getMainCardInfo)
-			petCards.PUT("/:id", h.updateCard)
-			petCards.DELETE("/:id", h.deleteCard)
+			petCards.PUT("/update/:id", h.updateCard)
+			petCards.DELETE("/delete/:id", h.deleteCard)
 		}
 
 	}

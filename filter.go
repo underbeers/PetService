@@ -10,3 +10,8 @@ type BreedFilter struct {
 	PetTypeId int
 	BreedName string
 }
+
+type PetCardFilter struct {
+	PetCardId int
+	UserId    int
+}
