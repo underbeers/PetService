@@ -22,11 +22,11 @@ type PetCard struct {
 	PetTypeName   string    `json:"pet_type" db:"pet_type"`
 	UserId        int       `json:"user_id" db:"user_id" binding:"required"`
 	Name          string    `json:"pet_name" db:"pet_name" binding:"required"`
-	BreedId       int       `json:"breed_id" db:"breed_id"`
+	BreedId       int       `json:"breed_id" db:"breed_id" binding:"required"`
 	BreedName     string    `json:"breed" db:"breed_name"`
 	Photo         string    `json:"photo" db:"photo"`
-	BirthDate     time.Time `json:"birth_date" db:"birth_date"`
-	Male          bool      `json:"male" db:"male"`
+	BirthDate     time.Time `json:"birth_date" db:"birth_date" binding:"required"`
+	Male          bool      `json:"male" db:"male" binding:"required"`
 	Gender        string    `json:"gender" db:"gender"`
 	Color         string    `json:"color" db:"color"`
 	Care          string    `json:"care" db:"care"`
