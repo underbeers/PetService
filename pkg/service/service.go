@@ -1,24 +1,24 @@
 package service
 
 import (
-	pet_service "github.com/underbeers/PetService"
+	"github.com/underbeers/PetService/pkg/models"
 	"github.com/underbeers/PetService/pkg/repository"
 )
 
 type PetType interface {
-	GetAll(pet_service.PetTypeFilter) ([]pet_service.PetType, error)
+	GetAll(models.PetTypeFilter) ([]models.PetType, error)
 }
 
 type Breed interface {
-	GetAll(filter pet_service.BreedFilter) ([]pet_service.Breed, error)
+	GetAll(filter models.BreedFilter) ([]models.Breed, error)
 }
 
 type PetCard interface {
-	Create(petCard pet_service.PetCard) error
-	GetAll(filter pet_service.PetCardFilter) ([]pet_service.PetCard, error)
-	GetMain(filter pet_service.PetCardFilter) ([]pet_service.PetCardMainInfo, error)
+	Create(petCard models.PetCard) error
+	GetAll(filter models.PetCardFilter) ([]models.PetCard, error)
+	GetMain(filter models.PetCardFilter) ([]models.PetCardMainInfo, error)
 	Delete(id int) error
-	Update(id int, input pet_service.UpdateCardInput) error
+	Update(id int, input models.UpdateCardInput) error
 }
 
 type Service struct {

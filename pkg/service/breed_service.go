@@ -1,7 +1,7 @@
 package service
 
 import (
-	pet_service "github.com/underbeers/PetService"
+	"github.com/underbeers/PetService/pkg/models"
 	"github.com/underbeers/PetService/pkg/repository"
 )
 
@@ -13,6 +13,6 @@ func NewBreedService(repo repository.Breed) *BreedService {
 	return &BreedService{repo: repo}
 }
 
-func (s *BreedService) GetAll(filter pet_service.BreedFilter) ([]pet_service.Breed, error) {
+func (s *BreedService) GetAll(filter models.BreedFilter) ([]models.Breed, error) {
 	return s.repo.GetAll(filter)
 }

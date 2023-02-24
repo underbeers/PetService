@@ -1,4 +1,4 @@
-package PetService
+package server
 
 import (
 	"context"

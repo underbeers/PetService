@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	pet_service "github.com/underbeers/PetService"
+	pet_service "github.com/underbeers/PetService/pkg/models"
 	"net/http"
 	"strconv"
 )

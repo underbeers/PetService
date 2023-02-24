@@ -5,9 +5,9 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	pet_service "github.com/underbeers/PetService"
 	"github.com/underbeers/PetService/pkg/handler"
 	"github.com/underbeers/PetService/pkg/repository"
+	pet_service "github.com/underbeers/PetService/pkg/server"
 	"github.com/underbeers/PetService/pkg/service"
 	"os"
 )

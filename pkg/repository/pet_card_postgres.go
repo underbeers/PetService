@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
-	pet_service "github.com/underbeers/PetService"
+	"github.com/underbeers/PetService/pkg/models"
 	"strings"
 )
 
@@ -16,7 +16,7 @@ func NewPetCardPostgres(db *sqlx.DB) *PetCardPostgres {
 	return &PetCardPostgres{db: db}
 }
 
-func (r *PetCardPostgres) Create(petCard pet_service.PetCard) error {
+func (r *PetCardPostgres) Create(petCard models.PetCard) error {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return err
@@ -38,7 +38,7 @@ func (r *PetCardPostgres) Create(petCard pet_service.PetCard) error {
 	return tx.Commit()
 }
 
-func createPetCardQuery(filter pet_service.PetCardFilter) string {
+func createPetCardQuery(filter models.PetCardFilter) string {
 
 	query := fmt.Sprintf("SELECT pc.id, pc.pet_type_id, pc.user_id, pc.pet_name, pc.breed_id, pc.photo, pc.birth_date, "+
 		"pc.male, CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' END AS gender, pc.color, pc.care, "+
@@ -56,8 +56,8 @@ func createPetCardQuery(filter pet_service.PetCardFilter) string {
 	return query
 }
 
-func (r *PetCardPostgres) GetAll(filter pet_service.PetCardFilter) ([]pet_service.PetCard, error) {
-	var lists []pet_service.PetCard
+func (r *PetCardPostgres) GetAll(filter models.PetCardFilter) ([]models.PetCard, error) {
+	var lists []models.PetCard
 
 	query := createPetCardQuery(filter)
 	err := r.db.Select(&lists, query)
@@ -65,7 +65,7 @@ func (r *PetCardPostgres) GetAll(filter pet_service.PetCardFilter) ([]pet_servic
 	return lists, err
 }
 
-func createMainCardInfoQuery(filter pet_service.PetCardFilter) string {
+func createMainCardInfoQuery(filter models.PetCardFilter) string {
 
 	query := fmt.Sprintf("SELECT pc.id, pc.pet_name, pc.photo, pc.birth_date, "+
 		"CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' END AS gender, pt.pet_type, br.breed_name "+
@@ -84,8 +84,8 @@ func createMainCardInfoQuery(filter pet_service.PetCardFilter) string {
 	return query
 }
 
-func (r *PetCardPostgres) GetMain(filter pet_service.PetCardFilter) ([]pet_service.PetCardMainInfo, error) {
-	var lists []pet_service.PetCardMainInfo
+func (r *PetCardPostgres) GetMain(filter models.PetCardFilter) ([]models.PetCardMainInfo, error) {
+	var lists []models.PetCardMainInfo
 
 	query := createMainCardInfoQuery(filter)
 	err := r.db.Select(&lists, query)
@@ -101,7 +101,7 @@ func (r *PetCardPostgres) Delete(id int) error {
 	return err
 }
 
-func (r *PetCardPostgres) Update(id int, input pet_service.UpdateCardInput) error {
+func (r *PetCardPostgres) Update(id int, input models.UpdateCardInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1

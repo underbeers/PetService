@@ -2,25 +2,25 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	pet_service "github.com/underbeers/PetService"
+	"github.com/underbeers/PetService/pkg/models"
 	"net/http"
 	"strconv"
 )
 
 func (h *Handler) createNewCard(c *gin.Context) {
 
-	var input pet_service.PetCard
+	var input models.PetCard
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if _, err := h.services.PetType.GetAll(pet_service.PetTypeFilter{PetTypeId: input.PetTypeId}); err != nil {
+	if _, err := h.services.PetType.GetAll(models.PetTypeFilter{PetTypeId: input.PetTypeId}); err != nil {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect pet type id"})
 		return
 	}
 
-	breedId, err := h.services.Breed.GetAll(pet_service.BreedFilter{BreedId: input.BreedId})
+	breedId, err := h.services.Breed.GetAll(models.BreedFilter{BreedId: input.BreedId})
 	if err != nil || breedId[0].PetTypeId != input.PetTypeId {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect breed id"})
 		return
@@ -37,7 +37,7 @@ func (h *Handler) createNewCard(c *gin.Context) {
 
 func (h *Handler) getAllCards(c *gin.Context) {
 	query := c.Request.URL.Query()
-	filter := pet_service.PetCardFilter{}
+	filter := models.PetCardFilter{}
 
 	if query.Has("id") {
 		PetCardId, err := strconv.Atoi(query.Get("id"))
@@ -73,7 +73,7 @@ func (h *Handler) getAllCards(c *gin.Context) {
 
 func (h *Handler) getMainCardInfo(c *gin.Context) {
 	query := c.Request.URL.Query()
-	filter := pet_service.PetCardFilter{}
+	filter := models.PetCardFilter{}
 
 	if query.Has("id") {
 		PetCardId, err := strconv.Atoi(query.Get("id"))
@@ -114,27 +114,27 @@ func (h *Handler) updateCard(c *gin.Context) {
 		return
 	}
 
-	petCard, err := h.services.PetCard.GetAll(pet_service.PetCardFilter{PetCardId: id})
+	petCard, err := h.services.PetCard.GetAll(models.PetCardFilter{PetCardId: id})
 	if len(petCard) != 1 || err != nil {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect pet card id"})
 		return
 	}
 
-	var input pet_service.UpdateCardInput
+	var input models.UpdateCardInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if input.PetTypeId != nil {
-		if _, err := h.services.PetType.GetAll(pet_service.PetTypeFilter{PetTypeId: *input.PetTypeId}); err != nil {
+		if _, err := h.services.PetType.GetAll(models.PetTypeFilter{PetTypeId: *input.PetTypeId}); err != nil {
 			c.JSON(http.StatusBadRequest, statusResponse{"incorrect pet type id"})
 			return
 		}
 	}
 
 	if input.BreedId != nil {
-		breedId, err := h.services.Breed.GetAll(pet_service.BreedFilter{BreedId: *input.BreedId})
+		breedId, err := h.services.Breed.GetAll(models.BreedFilter{BreedId: *input.BreedId})
 		if err != nil || breedId[0].PetTypeId != *input.PetTypeId {
 			c.JSON(http.StatusBadRequest, statusResponse{"incorrect breed id"})
 			return
@@ -156,7 +156,7 @@ func (h *Handler) deleteCard(c *gin.Context) {
 		return
 	}
 
-	petCard, err := h.services.PetCard.GetAll(pet_service.PetCardFilter{PetCardId: id})
+	petCard, err := h.services.PetCard.GetAll(models.PetCardFilter{PetCardId: id})
 	if len(petCard) != 1 || err != nil {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect pet card id"})
 		return

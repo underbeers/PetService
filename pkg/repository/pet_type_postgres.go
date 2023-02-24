@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	pet_service "github.com/underbeers/PetService"
+	"github.com/underbeers/PetService/pkg/models"
 )
 
 type PetTypePostgres struct {
@@ -14,7 +14,7 @@ func NewPetTypePostgres(db *sqlx.DB) *PetTypePostgres {
 	return &PetTypePostgres{db: db}
 }
 
-func createPetTypeQuery(filter pet_service.PetTypeFilter) string {
+func createPetTypeQuery(filter models.PetTypeFilter) string {
 	query := fmt.Sprintf("SELECT id, pet_type FROM %s ", petTypeTable)
 
 	if filter.PetTypeId != 0 {
@@ -26,8 +26,8 @@ func createPetTypeQuery(filter pet_service.PetTypeFilter) string {
 	return query
 }
 
-func (r *PetTypePostgres) GetAll(filter pet_service.PetTypeFilter) ([]pet_service.PetType, error) {
-	var petTypeList []pet_service.PetType
+func (r *PetTypePostgres) GetAll(filter models.PetTypeFilter) ([]models.PetType, error) {
+	var petTypeList []models.PetType
 
 	query := createPetTypeQuery(filter)
 	err := r.db.Select(&petTypeList, query)

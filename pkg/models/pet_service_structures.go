@@ -1,4 +1,4 @@
-package PetService
+package models
 
 import (
 	"errors"
