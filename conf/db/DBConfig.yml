@@ -1,0 +1,5 @@
+host: localhost
+port: 5436
+name_db: pet_service
+user_name: postgres
+password: Qf3m!t6s-ySMezj
