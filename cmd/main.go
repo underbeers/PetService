@@ -13,7 +13,7 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	debugMode := flag.Bool("use_db_config", false, "use for starting locally in debug mode")
+	debugMode := flag.Bool("use_db_config", true, "use for starting locally in debug mode")
 	flag.Parse()
 
 	//if err := initConfig(); err != nil {
@@ -42,12 +42,13 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
+
 	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
+	services := service.NewService(repos, cfg)
 	handlers := handler.NewHandler(services)
 
 	srv := new(pet_service.Server)
-	if err := srv.Run("8000", handlers.InitRoutes()); err != nil {
+	if err := srv.Run(cfg.Listen.Port, handlers.InitRoutes(), cfg); err != nil {
 		logrus.Fatalf("error occured while running http server: %s", err.Error())
 	}
 

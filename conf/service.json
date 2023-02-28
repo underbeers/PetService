@@ -1,0 +1,43 @@
+{
+  "name": "pet",
+  "port": "6003",
+  "ip": "127.0.0.1",
+  "label": "pl_pet_service",
+  "endpoints": [
+    {
+      "url": "petCards/new/",
+      "protected": true,
+      "methods": ["POST", "OPTIONS"]
+    },
+    {
+      "url": "petTypes",
+      "protected": false,
+      "methods": ["GET", "OPTIONS"]
+    },
+    {
+      "url": "breeds",
+      "protected": false,
+      "methods": ["GET","OPTIONS"]
+    },
+    {
+      "url": "petCards",
+      "protected": false,
+      "methods": ["GET", "OPTIONS"]
+    },
+    {
+      "url": "petCards/main",
+      "protected": false,
+      "methods": ["GET", "OPTIONS"]
+    },
+    {
+      "url": "petCards/update/:id",
+      "protected": true,
+      "methods": ["PUT", "OPTIONS"]
+    },
+    {
+      "url": "petCards/delete/:id",
+      "protected": true,
+      "methods": ["DELETE", "OPTIONS"]
+    }
+  ]
+}

@@ -37,7 +37,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			petCards.DELETE("/delete/:id", h.deleteCard)
 		}
 
+		gwConnect := api.Group("endpoint-info")
+		{
+			gwConnect.GET("/", h.handleInfo)
+		}
+
 	}
+
+	h.services.Router = router
 
 	return router
 }

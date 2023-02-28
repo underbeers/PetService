@@ -23,11 +23,11 @@ type Config struct {
 }
 
 type DB struct {
-	Host     string
-	Port     string
-	Username string
-	Password string
-	DBName   string
+	Host     string `yaml:"host"`
+	Port     string `yaml:"port"`
+	Username string `yaml:"user_name"`
+	Password string `yaml:"password"`
+	DBName   string `yaml:"name_db"`
 }
 
 type Listen struct {

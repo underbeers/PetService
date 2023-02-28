@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/underbeers/PetService/pkg/models"
 	"github.com/underbeers/PetService/pkg/repository"
 )
@@ -25,12 +26,15 @@ type Service struct {
 	PetType
 	Breed
 	PetCard
+	Config *repository.Config
+	Router *gin.Engine
 }
 
-func NewService(repos *repository.Repository) *Service {
+func NewService(repos *repository.Repository, cfg *repository.Config) *Service {
 	return &Service{
 		PetType: NewPetTypeService(repos.PetType),
 		Breed:   NewBreedService(repos.Breed),
 		PetCard: NewPetCardService(repos.PetCard),
+		Config:  cfg,
 	}
 }
