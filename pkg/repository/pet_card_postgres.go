@@ -21,7 +21,7 @@ func (r *PetCardPostgres) Create(petCard models.PetCard) error {
 	if err != nil {
 		return err
 	}
-	createPetCardQuery := fmt.Sprintf("INSERT INTO %s (pet_type_id, user_id, pet_name, breed_id, photo, birth_date, "+
+	createPetCardQuery := fmt.Sprintf("INSERT INTO pet_service.public.%s (pet_type_id, user_id, pet_name, breed_id, photo, birth_date, "+
 		"male, color, care, pet_character, pedigree, sterilization, vaccinations) VALUES ($1, $2, $3, $4, $5, $6, $7, "+
 		"$8, $9, $10, $11, $12, $13)", petCardTable)
 	_, err = tx.Exec(createPetCardQuery, petCard.PetTypeId, petCard.UserId, petCard.Name, petCard.BreedId, petCard.Photo,
@@ -40,9 +40,9 @@ func (r *PetCardPostgres) Create(petCard models.PetCard) error {
 
 func createPetCardQuery(filter models.PetCardFilter) string {
 
-	query := fmt.Sprintf("SELECT pc.id, pc.pet_type_id, pc.user_id, pc.pet_name, pc.breed_id, pc.photo, pc.birth_date, "+
+	query := fmt.Sprintf(`SELECT pc.id, pc.pet_type_id, pc.user_id, pc.pet_name, pc.breed_id, pc.photo, pc.birth_date, "+
 		"pc.male, CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' END AS gender, pc.color, pc.care, "+
-		"pc.pet_character, pc.pedigree, pc.sterilization, pc.vaccinations, pt.pet_type, br.breed_name FROM %s pc ",
+		"pc.pet_character, pc.pedigree, pc.sterilization, pc.vaccinations, pt.pet_type, br.breed_name FROM pet_service.public.%s pc `,
 		petCardTable)
 	query += "INNER JOIN pet_type pt ON pc.pet_type_id = pt.id INNER JOIN breed br ON pc.breed_id = br.id "
 	if filter.PetCardId != 0 && filter.UserId != 0 {
@@ -67,9 +67,9 @@ func (r *PetCardPostgres) GetAll(filter models.PetCardFilter) ([]models.PetCard,
 
 func createMainCardInfoQuery(filter models.PetCardFilter) string {
 
-	query := fmt.Sprintf("SELECT pc.id, pc.pet_name, pc.photo, pc.birth_date, "+
+	query := fmt.Sprintf(`SELECT pc.id, pc.pet_name, pc.photo, pc.birth_date, "+
 		"CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' END AS gender, pt.pet_type, br.breed_name "+
-		"FROM %s pc ",
+		"FROM pet_service.public.%s pc `,
 		petCardTable)
 
 	query += "INNER JOIN pet_type pt ON pc.pet_type_id = pt.id INNER JOIN breed br ON pc.breed_id = br.id "

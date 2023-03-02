@@ -15,7 +15,7 @@ func NewBreedPostgres(db *sqlx.DB) *BreedPostgres {
 }
 
 func createBreedQuery(filter models.BreedFilter) string {
-	query := fmt.Sprintf("SELECT id, pet_type_id, breed_name FROM %s ", breedTable)
+	query := fmt.Sprintf(`SELECT id, pet_type_id, breed_name FROM pet_service.public.%s`, breedTable)
 
 	if filter.BreedId != 0 {
 		query += fmt.Sprintf("WHERE id = %d", filter.BreedId)
