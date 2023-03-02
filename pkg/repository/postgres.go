@@ -1,11 +1,16 @@
 package repository
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
 	"log"
 	"os"
+	"time"
 )
 
 const (
@@ -53,13 +58,40 @@ type Service struct {
 	} `json:"endpoints"`
 }
 
-func NewPostgresDB(cfg DB) (*sqlx.DB, error) {
-	db, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password))
+func (db *DB) GetConnectionString() string {
+	return fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
+		db.Username, db.Password, db.Host, db.Port, db.DBName)
+}
 
+func NewPostgresDB(dbc DB) (*sqlx.DB, error) {
+	// parse connection string
+	dbConf, err := pgx.ParseConfig(dbc.GetConnectionString())
 	if err != nil {
-		return nil, err
+		return nil, errors.New("failed to parse config")
 	}
+
+	dbConf.Host = dbc.Host
+
+	//register pgx conn
+	dsn := stdlib.RegisterConnConfig(dbConf)
+
+	sql.Register("wrapper", stdlib.GetDefaultDriver())
+	wdb, err := sql.Open("wrapper", dsn)
+	if err != nil {
+		return nil, errors.New("failed to connect to database")
+	}
+
+	const (
+		maxOpenConns    = 50
+		maxIdleConns    = 50
+		connMaxLifetime = 3
+		connMaxIdleTime = 5
+	)
+	db := sqlx.NewDb(wdb, "pgx")
+	db.SetMaxOpenConns(maxOpenConns)
+	db.SetMaxIdleConns(maxIdleConns)
+	db.SetConnMaxLifetime(connMaxLifetime * time.Minute)
+	db.SetConnMaxIdleTime(connMaxIdleTime * time.Minute)
 
 	err = db.Ping()
 	if err != nil {
