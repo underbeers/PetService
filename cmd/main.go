@@ -13,7 +13,7 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	debugMode := flag.Bool("use_db_config", true, "use for starting locally in debug mode")
+	debugMode := flag.Bool("use_db_config", false, "use for starting locally in debug mode")
 	flag.Parse()
 
 	//if err := initConfig(); err != nil {
@@ -48,7 +48,7 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	srv := new(pet_service.Server)
-	if err := srv.Run(cfg.Listen.Port, handlers.InitRoutes(), cfg); err != nil {
+	if err := srv.Run(handlers.InitRoutes(), cfg); err != nil {
 		logrus.Fatalf("error occured while running http server: %s", err.Error())
 	}
 

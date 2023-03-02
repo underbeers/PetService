@@ -26,7 +26,7 @@ type Server struct {
 	httpServer *http.Server
 }
 
-func (s *Server) Run(port string, handler *gin.Engine, config *repository.Config) error {
+func (s *Server) Run(handler *gin.Engine, config *repository.Config) error {
 	logrus.Infof("Start to listen to port %s", config.Listen.Port)
 	var errorCnt int
 	for errorCnt < attempts {
@@ -47,7 +47,7 @@ func (s *Server) Run(port string, handler *gin.Engine, config *repository.Config
 	}
 
 	s.httpServer = &http.Server{
-		Addr:           ":" + port,
+		Addr:           ":" + config.Listen.Port,
 		Handler:        handler,
 		MaxHeaderBytes: 1 << 20, // 1 MB
 		ReadTimeout:    10 * time.Second,
