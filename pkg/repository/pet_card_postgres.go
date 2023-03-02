@@ -21,7 +21,7 @@ func (r *PetCardPostgres) Create(petCard models.PetCard) error {
 	if err != nil {
 		return err
 	}
-	createPetCardQuery := fmt.Sprintf("INSERT INTO pet_service.public.%s (pet_type_id, user_id, pet_name, breed_id, photo, birth_date, "+
+	createPetCardQuery := fmt.Sprintf("INSERT INTO %s (pet_type_id, user_id, pet_name, breed_id, photo, birth_date, "+
 		"male, color, care, pet_character, pedigree, sterilization, vaccinations) VALUES ($1, $2, $3, $4, $5, $6, $7, "+
 		"$8, $9, $10, $11, $12, $13)", petCardTable)
 	_, err = tx.Exec(createPetCardQuery, petCard.PetTypeId, petCard.UserId, petCard.Name, petCard.BreedId, petCard.Photo,
