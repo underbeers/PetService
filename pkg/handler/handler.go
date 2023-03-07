@@ -35,6 +35,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			petCards.GET("/main", h.getMainCardInfo).OPTIONS("/main", h.getMainCardInfo)
 			petCards.PUT("/update/:id", h.updateCard).OPTIONS("/update/:id", h.updateCard)
 			petCards.DELETE("/delete/:id", h.deleteCard).OPTIONS("/delete/:id", h.deleteCard)
+
 		}
 
 		gwConnect := api.Group("endpoint-info")
