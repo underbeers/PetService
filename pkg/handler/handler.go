@@ -20,26 +20,26 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		petTypes := api.Group("/petTypes")
 		{
-			petTypes.GET("", h.getAllTypes)
+			petTypes.GET("", h.getAllTypes).OPTIONS("", h.getAllTypes)
 		}
 
 		breeds := api.Group("/breeds")
 		{
-			breeds.GET("", h.getAllBreeds)
+			breeds.GET("", h.getAllBreeds).OPTIONS("", h.getAllBreeds)
 		}
 
 		petCards := api.Group("petCards")
 		{
-			petCards.POST("/new", h.createNewCard)
-			petCards.GET("", h.getAllCards)
-			petCards.GET("/main", h.getMainCardInfo)
-			petCards.PUT("/update/:id", h.updateCard)
-			petCards.DELETE("/delete/:id", h.deleteCard)
+			petCards.POST("/new", h.createNewCard).OPTIONS("/new", h.createNewCard)
+			petCards.GET("", h.getAllCards).OPTIONS("", h.getAllCards)
+			petCards.GET("/main", h.getMainCardInfo).OPTIONS("/main", h.getMainCardInfo)
+			petCards.PUT("/update/:id", h.updateCard).OPTIONS("/update/:id", h.updateCard)
+			petCards.DELETE("/delete/:id", h.deleteCard).OPTIONS("/delete/:id", h.deleteCard)
 		}
 
 		gwConnect := api.Group("endpoint-info")
 		{
-			gwConnect.GET("/", h.handleInfo)
+			gwConnect.GET("/", h.handleInfo).OPTIONS("/", h.handleInfo)
 		}
 
 	}
