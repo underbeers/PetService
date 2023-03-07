@@ -15,7 +15,7 @@ func NewPetTypePostgres(db *sqlx.DB) *PetTypePostgres {
 }
 
 func createPetTypeQuery(filter models.PetTypeFilter) string {
-	query := fmt.Sprintf(`SELECT id, pet_type FROM pet_type`)
+	query := fmt.Sprintf(`SELECT id, pet_type FROM pet_type `)
 
 	if filter.PetTypeId != 0 {
 		query += fmt.Sprintf("WHERE id = %d ORDER BY id", filter.PetTypeId)
