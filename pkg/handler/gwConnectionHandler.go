@@ -78,7 +78,7 @@ func getHandles(e *gin.Engine) (map[string][]string, error) {
 		path := v.Path
 		method := []string{v.Method}
 		path = strings.Split(path, "/api/v1/")[1]
-		data[path] = method
+		data[path] = append(data[path], method...)
 	}
 
 	return data, nil
