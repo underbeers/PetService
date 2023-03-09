@@ -6,7 +6,7 @@ type PetCard struct {
 	Id            int       `json:"id" db:"id"`
 	PetTypeId     int       `json:"pet_type_id" db:"pet_type_id" binding:"required"`
 	PetTypeName   string    `json:"pet_type" db:"pet_type"`
-	UserId        int       `json:"user_id" db:"user_id" binding:"required"`
+	UserId        int       `json:"user_id" db:"user_id"`
 	Name          string    `json:"pet_name" db:"pet_name" binding:"required"`
 	BreedId       int       `json:"breed_id" db:"breed_id" binding:"required"`
 	BreedName     string    `json:"breed" db:"breed_name"`

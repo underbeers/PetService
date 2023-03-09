@@ -5,7 +5,7 @@
   "label": "pl_pet_service",
   "endpoints": [
     {
-      "url": "petCards/new/",
+      "url": "petCards/new",
       "protected": true,
       "methods": ["POST", "OPTIONS"]
     },
