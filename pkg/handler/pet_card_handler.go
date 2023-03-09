@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/underbeers/PetService/pkg/models"
 	"net/http"
@@ -23,6 +24,18 @@ func (h *Handler) createNewCard(c *gin.Context) {
 	breedId, err := h.services.Breed.GetAll(models.BreedFilter{BreedId: input.BreedId})
 	if err != nil || breedId[0].PetTypeId != input.PetTypeId {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect breed id"})
+		return
+	}
+
+	userID := c.Request.Header.Get("UserID")
+	if len(userID) == 0 {
+		c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
+		return
+	}
+	fmt.Println(userID)
+	input.UserId, err = strconv.Atoi(userID)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
 		return
 	}
 
@@ -141,6 +154,18 @@ func (h *Handler) updateCard(c *gin.Context) {
 		}
 	}
 
+	userID := c.Request.Header.Get("UserID")
+	if len(userID) == 0 {
+		c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
+		return
+	}
+
+	*input.UserId, err = strconv.Atoi(userID)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
+		return
+	}
+
 	if err := h.services.PetCard.Update(id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -159,6 +184,23 @@ func (h *Handler) deleteCard(c *gin.Context) {
 	petCard, err := h.services.PetCard.GetAll(models.PetCardFilter{PetCardId: id})
 	if len(petCard) != 1 || err != nil {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect pet card id"})
+		return
+	}
+
+	userID := c.Request.Header.Get("UserID")
+	if len(userID) == 0 {
+		c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
+		return
+	}
+
+	intUserid, err := strconv.Atoi(userID)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
+		return
+	}
+	/*Проверка на то, что id из токена совпадает с id владельца карточки*/
+	if petCard[0].UserId != intUserid {
+		newErrorResponse(c, http.StatusBadRequest, "not enough permissions to delete")
 		return
 	}
 
