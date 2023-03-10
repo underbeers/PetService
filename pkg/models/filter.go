@@ -1,5 +1,7 @@
 package models
 
+import "github.com/google/uuid"
+
 type PetTypeFilter struct {
 	PetTypeId int
 	PetType   string
@@ -13,5 +15,5 @@ type BreedFilter struct {
 
 type PetCardFilter struct {
 	PetCardId int
-	UserId    int
+	UserId    uuid.UUID
 }

@@ -15,7 +15,7 @@ CREATE TABLE pet_card
 (
     id            serial primary key,
     pet_type_id   int references pet_type (id) ON DELETE CASCADE,
-    user_id       int,
+    user_id       UUID,
     pet_name      varchar(255),
     breed_id      int references breed (id) ON DELETE CASCADE,
     photo         varchar(255),

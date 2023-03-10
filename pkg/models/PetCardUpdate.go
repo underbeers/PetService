@@ -2,12 +2,13 @@ package models
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"time"
 )
 
 type UpdateCardInput struct {
 	PetTypeId     *int       `json:"pet_type_id"`
-	UserId        *int       `json:"user_id"`
+	UserId        *uuid.UUID `json:"user_id"`
 	Name          *string    `json:"pet_name"`
 	BreedId       *int       `json:"breed_id"`
 	Photo         *string    `json:"photo"`

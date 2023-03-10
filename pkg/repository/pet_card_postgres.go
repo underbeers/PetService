@@ -45,12 +45,12 @@ func createPetCardQuery(filter models.PetCardFilter) string {
 		"pc.pet_character, pc.pedigree, pc.sterilization, pc.vaccinations, pt.pet_type, br.breed_name FROM %s pc ",
 		petCardTable)
 	query += "INNER JOIN pet_type pt ON pc.pet_type_id = pt.id INNER JOIN breed br ON pc.breed_id = br.id "
-	if filter.PetCardId != 0 && filter.UserId != 0 {
-		query += fmt.Sprintf("WHERE pc.id = %d AND pc.user_id = %d", filter.PetCardId, filter.UserId)
+	if filter.PetCardId != 0 && filter.UserId.String() != "00000000-0000-0000-0000-000000000000" {
+		query += fmt.Sprintf("WHERE pc.id = %d AND pc.user_id = '%s'", filter.PetCardId, filter.UserId.String())
 	} else if filter.PetCardId != 0 {
 		query += fmt.Sprintf("WHERE pc.id = %d", filter.PetCardId)
-	} else if filter.UserId != 0 {
-		query += fmt.Sprintf("WHERE pc.user_id = %d", filter.UserId)
+	} else if filter.UserId.String() != "00000000-0000-0000-0000-000000000000" {
+		query += fmt.Sprintf("WHERE pc.user_id = '%s'", filter.UserId.String())
 	}
 
 	return query
@@ -73,12 +73,12 @@ func createMainCardInfoQuery(filter models.PetCardFilter) string {
 		petCardTable)
 
 	query += "INNER JOIN pet_type pt ON pc.pet_type_id = pt.id INNER JOIN breed br ON pc.breed_id = br.id "
-	if filter.PetCardId != 0 && filter.UserId != 0 {
-		query += fmt.Sprintf("WHERE pc.id = %d AND pc.user_id = %d", filter.PetCardId, filter.UserId)
+	if filter.PetCardId != 0 && filter.UserId.String() != "00000000-0000-0000-0000-000000000000" {
+		query += fmt.Sprintf("WHERE pc.id = %d AND pc.user_id = '%s'", filter.PetCardId, filter.UserId.String())
 	} else if filter.PetCardId != 0 {
 		query += fmt.Sprintf("WHERE pc.id = %d", filter.PetCardId)
-	} else if filter.UserId != 0 {
-		query += fmt.Sprintf("WHERE pc.user_id = %d", filter.UserId)
+	} else if filter.UserId.String() != "00000000-0000-0000-0000-000000000000" {
+		query += fmt.Sprintf("WHERE pc.user_id = '%s'", filter.UserId.String())
 	}
 
 	return query
@@ -94,7 +94,7 @@ func (r *PetCardPostgres) GetMain(filter models.PetCardFilter) ([]models.PetCard
 }
 
 func (r *PetCardPostgres) Delete(id int) error {
-	query := fmt.Sprintf("DELETE FROM %s tl WHERE tl.id = $1",
+	query := fmt.Sprintf("DELETE FROM %s pc WHERE pc.id = $1",
 		petCardTable)
 	_, err := r.db.Exec(query, id)
 
@@ -184,7 +184,7 @@ func (r *PetCardPostgres) Update(id int, input models.UpdateCardInput) error {
 	}
 
 	setQuery := strings.Join(setValues, ", ")
-	query := fmt.Sprintf("UPDATE %s tl SET %s WHERE tl.id = $%d",
+	query := fmt.Sprintf("UPDATE %s pc SET %s WHERE pc.id = $%d",
 		petCardTable, setQuery, argId)
 	args = append(args, id)
 
