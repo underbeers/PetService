@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/underbeers/PetService/pkg/models"
 	"net/http"
 	"strconv"
@@ -28,16 +29,18 @@ func (h *Handler) createNewCard(c *gin.Context) {
 	}
 
 	userID := c.Request.Header.Get("UserID")
+
 	if len(userID) == 0 {
 		c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
 		return
 	}
-	fmt.Println(userID)
-	input.UserId, err = strconv.Atoi(userID)
+	id, err := uuid.Parse(userID)
 	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
+	fmt.Println(id)
+	input.UserId = id
 
 	err = h.services.PetCard.Create(input)
 	if err != nil {
@@ -62,12 +65,17 @@ func (h *Handler) getAllCards(c *gin.Context) {
 	}
 
 	if query.Has("user_id") {
-		UserId, err := strconv.Atoi(query.Get("user_id"))
-		if err != nil || UserId <= 0 {
-			newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
+		userID := query.Get("user_id")
+		if len(userID) == 0 {
+			c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
 			return
 		}
-		filter.UserId = UserId
+		id, err := uuid.Parse(userID)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		filter.UserId = id
 	}
 
 	petCardList, err := h.services.PetCard.GetAll(filter)
@@ -98,12 +106,17 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 	}
 
 	if query.Has("user_id") {
-		UserId, err := strconv.Atoi(query.Get("user_id"))
-		if err != nil || UserId <= 0 {
-			newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
+		userID := query.Get("user_id")
+		if len(userID) == 0 {
+			c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
 			return
 		}
-		filter.UserId = UserId
+		id, err := uuid.Parse(userID)
+		if err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		filter.UserId = id
 	}
 
 	petCardList, err := h.services.PetCard.GetMain(filter)
@@ -160,7 +173,7 @@ func (h *Handler) updateCard(c *gin.Context) {
 		return
 	}
 
-	*input.UserId, err = strconv.Atoi(userID)
+	*input.UserId, err = uuid.Parse(userID)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
 		return
@@ -193,13 +206,14 @@ func (h *Handler) deleteCard(c *gin.Context) {
 		return
 	}
 
-	intUserid, err := strconv.Atoi(userID)
+	parseUserID, err := uuid.Parse(userID)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
 		return
 	}
+
 	/*Проверка на то, что id из токена совпадает с id владельца карточки*/
-	if petCard[0].UserId != intUserid {
+	if petCard[0].UserId != parseUserID {
 		newErrorResponse(c, http.StatusBadRequest, "not enough permissions to delete")
 		return
 	}
