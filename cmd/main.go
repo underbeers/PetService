@@ -16,27 +16,6 @@ func main() {
 	debugMode := flag.Bool("use_db_config", false, "use for starting locally in debug mode")
 	flag.Parse()
 
-	//if err := initConfig(); err != nil {
-	//	logrus.Fatalf("error initializing configs: %s", err.Error())
-	//}
-	//
-	//if err := godotenv.Load(); err != nil {
-	//	logrus.Fatalf("error loading env variables: %s", err.Error())
-	//}
-	//
-	//db, err := repository.NewPostgresDB(repository.Config{
-	//	Host:     viper.GetString("db.host"),
-	//	Port:     viper.GetString("db.port"),
-	//	Username: viper.GetString("db.username"),
-	//	DBName:   viper.GetString("db.dbname"),
-	//	SSLMode:  viper.GetString("db.sslmode"),
-	//	Password: os.Getenv("DB_PASSWORD"),
-	//})
-	//
-	//if err != nil {
-	//	logrus.Fatalf("failed to initialize db: %s", err.Error())
-	//}
-
 	cfg := repository.GetConfig(*debugMode)
 	db, err := repository.NewPostgresDB(*cfg.DB)
 	if err != nil {
@@ -53,9 +32,3 @@ func main() {
 	}
 
 }
-
-//func initConfig() error {
-//	viper.AddConfigPath("configs")
-//	viper.SetConfigName("config")
-//	return viper.ReadInConfig()
-//}
