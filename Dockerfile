@@ -1,14 +1,19 @@
-FROM golang:1.18-alpine
+FROM golang:1.18-alpine AS build
+
+WORKDIR /build
+
+COPY . .
+
+RUN go mod download
+RUN go build -o /build/pet_service /build/cmd/main.go
+
+FROM alpine:latest
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-
-COPY . ./
-
-RUN go build -o /pet_service ./cmd/main.go
+COPY ./conf ./conf
+COPY ./service.json ./service.json
+COPY --from=build /build/pet_service .
 
 ENV POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 ENV POSTGRES_HOST=$POSTGRES_HOST
@@ -17,7 +22,9 @@ ENV POSTGRES_PORT=$POSTGRES_PORT
 ENV POSTGRES_DB_NAME=$POSTGRES_DB_NAME
 ENV GATEWAY_PORT=$GATEWAY_PORT
 ENV GATEWAY_IP=$GATEWAY_IP
+ENV PETSERVICE_PORT=$PETSERVICE_PORT
+ENV PETSERVICE_IP=$PETSERVICE_IP
 
-EXPOSE 6003
+EXPOSE $PETSERVICE_IP
 
-CMD [ "/pet_service" ]
+CMD [ "./pet_service" ]
