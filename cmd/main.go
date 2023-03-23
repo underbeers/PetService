@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/underbeers/PetService/pkg/handler"
@@ -13,10 +12,7 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	debugMode := flag.Bool("use_db_config", false, "use for starting locally in debug mode")
-	flag.Parse()
-
-	cfg := repository.GetConfig(*debugMode)
+	cfg := repository.GetConfig()
 	db, err := repository.NewPostgresDB(*cfg.DB)
 	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())

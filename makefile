@@ -10,11 +10,11 @@ local:
 	go build -o . cmd/main.go
 	./main --use_db_config
 build_image:
-	docker build -t rodmul/pl_pet_service:v2 .
+	docker build -t rodmul/pl_pet_service:v3 .
 run:
 	docker run -d -p 6003:6003 -e POSTGRES_PASSWORD='DNd72JDSufesosd9' \
 	-e POSTGRES_HOST='79.137.198.139' -e POSTGRES_USER='postgres' \
-	-e POSTGRES_PORT='5432' -e POSTGRES_DB_NAME='pet_service' \
-	-e GATEWAY_PORT='6002' -e GATEWAY_IP='79.137.198.139' \
-	-e GATEWAY_LABEL='pl_api_gateway' \
-	--name pet_service_container rodmul/pl_pet_service:v1
+	-e POSTGRES_PORT='58235' -e POSTGRES_DB_NAME='pet_service' \
+	-e GATEWAY_PORT='6002' -e GATEWAY_IP='pl_api_gateway' \
+	-e PETSERVICE_IP='127.0.0.1' -e PETSERVICE_PORT='6003' \
+	--name pet_service_container rodmul/pl_pet_service:v3

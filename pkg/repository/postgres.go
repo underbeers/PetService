@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
@@ -17,6 +16,7 @@ const (
 	petTypeTable = "pet_type"
 	petCardTable = "pet_card"
 	breedTable   = "breed"
+	dbVersion    = 1
 )
 
 type Config struct {
@@ -101,24 +101,20 @@ func NewPostgresDB(dbc DB) (*sqlx.DB, error) {
 	return db, nil
 }
 
-func GetConfig(debugMode bool) *Config {
+func GetConfig() *Config {
 
 	logger := log.Default()
 	logger.Print("Read application configuration")
-	instance := &Config{DB: &DB{}, DebugMode: debugMode}
-	if err := cleanenv.ReadConfig("./conf/config.yml", instance); err != nil {
-		help, _ := cleanenv.GetDescription(instance, nil)
-		logger.Print(help)
-		logger.Fatal(err)
-	}
+	instance := &Config{DB: &DB{}}
 	instance.Gateway = &Gateway{
-		IP:    getEnv("GATEWAY_IP", "127.0.0.1"),
-		Port:  getEnv("GATEWAY_PORT", "6002"),
-		Label: getEnv("GATEWAY_IP", "127.0.0.1"),
+		IP:   getEnv("GATEWAY_IP", ""),
+		Port: getEnv("GATEWAY_PORT", ""),
 	}
 
-	instance.Listen.IP = getEnv("PETSERVICE_IP", "127.0.0.1")
-	instance.Listen.Port = getEnv("PETSERVICE_PORT", "6003")
+	instance.VersionDB = dbVersion
+	instance.Listen = &Listen{}
+	instance.Listen.IP = getEnv("PETSERVICE_IP", "")
+	instance.Listen.Port = getEnv("PETSERVICE_PORT", "")
 
 	instance.DB = &DB{
 		Host:     getEnv("POSTGRES_HOST", ""),

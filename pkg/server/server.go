@@ -101,16 +101,13 @@ func pingAPIGateway(config *repository.Config) error {
 
 func gatewayURL(config *repository.Config) (*url.URL, error) {
 	var domain string
-	if config.DebugMode {
-		domain = config.Gateway.IP
-	} else {
-		domain = config.Gateway.Label
-	}
+	domain = config.Gateway.IP
 	gwURL, err := url.Parse(
 		protocol + "://" + domain + ":" + config.Gateway.Port + baseURL + "hello/")
 	if err != nil {
 		return nil, errors.New("can't connect to ApiGateway")
 	}
+	logrus.Infof("Connection gateway url %s", gwURL.String())
 
 	return gwURL, nil
 }
@@ -118,11 +115,7 @@ func gatewayURL(config *repository.Config) (*url.URL, error) {
 func HelloAPIGateway(config *repository.Config) error {
 	var domain string
 
-	if config.DebugMode {
-		domain = config.Gateway.IP
-	} else {
-		domain = config.Gateway.Label
-	}
+	domain = config.Gateway.IP
 	gatewayURL, err := url.Parse(
 		protocol + "://" + domain + ":" + config.Gateway.Port + baseURL + "hello/")
 	if err != nil {
