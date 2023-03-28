@@ -69,7 +69,7 @@ func createMainCardInfoQuery(filter models.PetCardFilter) string {
 
 	query := fmt.Sprintf("SELECT pc.id, pc.pet_name, pc.photo, pc.birth_date, "+
 		"CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' END AS gender, pt.pet_type, br.breed_name "+
-		"FROM pet_service.public.%s pc ",
+		"FROM %s pc ",
 		petCardTable)
 
 	query += "INNER JOIN pet_type pt ON pc.pet_type_id = pt.id INNER JOIN breed br ON pc.breed_id = br.id "
