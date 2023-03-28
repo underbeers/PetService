@@ -28,7 +28,7 @@ func (h *Handler) createNewCard(c *gin.Context) {
 		return
 	}
 
-	userID := c.Request.Header.Get("UserID")
+	userID := c.Request.Header.Get("userID")
 
 	if len(userID) == 0 {
 		c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
@@ -64,8 +64,8 @@ func (h *Handler) getAllCards(c *gin.Context) {
 		filter.PetCardId = PetCardId
 	}
 
-	if query.Has("user_id") {
-		userID := query.Get("user_id")
+	if query.Has("userID") {
+		userID := query.Get("userID")
 		if len(userID) == 0 {
 			c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
 			return
@@ -105,8 +105,8 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 		filter.PetCardId = PetCardId
 	}
 
-	if query.Has("user_id") {
-		userID := query.Get("user_id")
+	if query.Has("userID") {
+		userID := query.Get("userID")
 		if len(userID) == 0 {
 			c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
 			return
@@ -167,7 +167,7 @@ func (h *Handler) updateCard(c *gin.Context) {
 		}
 	}
 
-	userID := c.Request.Header.Get("UserID")
+	userID := c.Request.Header.Get("userID")
 	if len(userID) == 0 {
 		c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
 		return
@@ -200,7 +200,7 @@ func (h *Handler) deleteCard(c *gin.Context) {
 		return
 	}
 
-	userID := c.Request.Header.Get("UserID")
+	userID := c.Request.Header.Get("userID")
 	if len(userID) == 0 {
 		c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
 		return
