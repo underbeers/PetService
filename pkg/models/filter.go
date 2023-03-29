@@ -15,5 +15,8 @@ type BreedFilter struct {
 
 type PetCardFilter struct {
 	PetCardId int
+	PetTypeId int
+	BreedId   int
 	UserId    uuid.UUID
+	Gender    string
 }
