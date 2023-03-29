@@ -79,6 +79,36 @@ func (h *Handler) getAllCards(c *gin.Context) {
 		filter.UserId = id
 	}
 
+	if query.Has("gender") {
+		gender := query.Get("gender")
+		if gender == "male" {
+			filter.Gender = "male"
+		} else if gender == "female" {
+			filter.Gender = "female"
+		} else {
+			newErrorResponse(c, http.StatusInternalServerError, "incorrect gender format")
+			return
+		}
+	}
+
+	if query.Has("petTypeId") {
+		PetTypeId, err := strconv.Atoi(query.Get("petTypeId"))
+		if err != nil || PetTypeId <= 0 {
+			newErrorResponse(c, http.StatusBadRequest, "invalid pet type id param")
+			return
+		}
+		filter.PetTypeId = PetTypeId
+	}
+
+	if query.Has("breedId") {
+		BreedId, err := strconv.Atoi(query.Get("breedId"))
+		if err != nil || BreedId <= 0 {
+			newErrorResponse(c, http.StatusBadRequest, "invalid breed id param")
+			return
+		}
+		filter.BreedId = BreedId
+	}
+
 	petCardList, err := h.services.PetCard.GetAll(filter)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -118,6 +148,36 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 			return
 		}
 		filter.UserId = id
+	}
+
+	if query.Has("gender") {
+		gender := query.Get("gender")
+		if gender == "male" {
+			filter.Gender = "male"
+		} else if gender == "female" {
+			filter.Gender = "female"
+		} else {
+			newErrorResponse(c, http.StatusInternalServerError, "incorrect gender format")
+			return
+		}
+	}
+
+	if query.Has("petTypeId") {
+		PetTypeId, err := strconv.Atoi(query.Get("petTypeId"))
+		if err != nil || PetTypeId <= 0 {
+			newErrorResponse(c, http.StatusBadRequest, "invalid pet type id param")
+			return
+		}
+		filter.PetTypeId = PetTypeId
+	}
+
+	if query.Has("breedId") {
+		BreedId, err := strconv.Atoi(query.Get("breedId"))
+		if err != nil || BreedId <= 0 {
+			newErrorResponse(c, http.StatusBadRequest, "invalid breed id param")
+			return
+		}
+		filter.BreedId = BreedId
 	}
 
 	petCardList, err := h.services.PetCard.GetMain(filter)
@@ -186,11 +246,11 @@ func (h *Handler) updateCard(c *gin.Context) {
 
 	/*Проверка на то, что id из токена совпадает с id владельца карточки*/
 	if petCard[0].UserId != parseUserID {
-		newErrorResponse(c, http.StatusBadRequest, "not enough permissions to delete")
+		newErrorResponse(c, http.StatusBadRequest, "not enough permissions to update")
 		return
 	}
 
-	*input.UserId = parseUserID
+	input.UserId = &parseUserID
 
 	if err := h.services.PetCard.Update(id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())

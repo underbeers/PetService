@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/underbeers/PetService/pkg/models"
@@ -44,13 +45,41 @@ func createPetCardQuery(filter models.PetCardFilter) string {
 		"pc.male, CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' END AS gender, pc.color, pc.care, "+
 		"pc.pet_character, pc.pedigree, pc.sterilization, pc.vaccinations, pt.pet_type, br.breed_name FROM %s pc ",
 		petCardTable)
+
 	query += "INNER JOIN pet_type pt ON pc.pet_type_id = pt.id INNER JOIN breed br ON pc.breed_id = br.id "
-	if filter.PetCardId != 0 && filter.UserId.String() != "00000000-0000-0000-0000-000000000000" {
-		query += fmt.Sprintf("WHERE pc.id = %d AND pc.user_id = '%s'", filter.PetCardId, filter.UserId.String())
-	} else if filter.PetCardId != 0 {
-		query += fmt.Sprintf("WHERE pc.id = %d", filter.PetCardId)
-	} else if filter.UserId.String() != "00000000-0000-0000-0000-000000000000" {
-		query += fmt.Sprintf("WHERE pc.user_id = '%s'", filter.UserId.String())
+
+	if filter.PetCardId != 0 || filter.UserId != uuid.Nil || filter.Gender != "" || filter.PetTypeId != 0 ||
+		filter.BreedId != 0 {
+
+		query += "WHERE "
+		setValues := make([]string, 0)
+
+		if filter.PetCardId != 0 {
+			setValues = append(setValues, fmt.Sprintf("pc.id = %d", filter.PetCardId))
+		}
+
+		if filter.PetTypeId != 0 {
+			setValues = append(setValues, fmt.Sprintf("pc.pet_type_id = %d", filter.PetTypeId))
+		}
+
+		if filter.BreedId != 0 {
+			setValues = append(setValues, fmt.Sprintf("pc.breed_id = %d", filter.BreedId))
+		}
+
+		if filter.UserId != uuid.Nil {
+			setValues = append(setValues, fmt.Sprintf("pc.user_id = '%s'", filter.UserId.String()))
+		}
+
+		if filter.Gender != "" {
+			if filter.Gender == "male" {
+				setValues = append(setValues, fmt.Sprintf("pc.male = True"))
+			} else if filter.Gender == "female" {
+				setValues = append(setValues, fmt.Sprintf("pc.male = False"))
+			}
+		}
+
+		query += strings.Join(setValues, " AND ")
+
 	}
 
 	return query
@@ -73,12 +102,39 @@ func createMainCardInfoQuery(filter models.PetCardFilter) string {
 		petCardTable)
 
 	query += "INNER JOIN pet_type pt ON pc.pet_type_id = pt.id INNER JOIN breed br ON pc.breed_id = br.id "
-	if filter.PetCardId != 0 && filter.UserId.String() != "00000000-0000-0000-0000-000000000000" {
-		query += fmt.Sprintf("WHERE pc.id = %d AND pc.user_id = '%s'", filter.PetCardId, filter.UserId.String())
-	} else if filter.PetCardId != 0 {
-		query += fmt.Sprintf("WHERE pc.id = %d", filter.PetCardId)
-	} else if filter.UserId.String() != "00000000-0000-0000-0000-000000000000" {
-		query += fmt.Sprintf("WHERE pc.user_id = '%s'", filter.UserId.String())
+
+	if filter.PetCardId != 0 || filter.UserId != uuid.Nil || filter.Gender != "" || filter.PetTypeId != 0 ||
+		filter.BreedId != 0 {
+
+		query += "WHERE "
+		setValues := make([]string, 0)
+
+		if filter.PetCardId != 0 {
+			setValues = append(setValues, fmt.Sprintf("pc.id = %d", filter.PetCardId))
+		}
+
+		if filter.PetTypeId != 0 {
+			setValues = append(setValues, fmt.Sprintf("pc.pet_type_id = %d", filter.PetTypeId))
+		}
+
+		if filter.BreedId != 0 {
+			setValues = append(setValues, fmt.Sprintf("pc.breed_id = %d", filter.BreedId))
+		}
+
+		if filter.UserId != uuid.Nil {
+			setValues = append(setValues, fmt.Sprintf("pc.user_id = '%s'", filter.UserId.String()))
+		}
+
+		if filter.Gender != "" {
+			if filter.Gender == "male" {
+				setValues = append(setValues, fmt.Sprintf("pc.male = True"))
+			} else if filter.Gender == "female" {
+				setValues = append(setValues, fmt.Sprintf("pc.male = False"))
+			}
+		}
+
+		query += strings.Join(setValues, " AND ")
+
 	}
 
 	return query
