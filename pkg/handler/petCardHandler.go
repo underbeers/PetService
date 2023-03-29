@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/underbeers/PetService/pkg/models"
@@ -17,11 +16,13 @@ func (h *Handler) createNewCard(c *gin.Context) {
 		return
 	}
 
+	/*Проверка, что такой pet type id существует*/
 	if _, err := h.services.PetType.GetAll(models.PetTypeFilter{PetTypeId: input.PetTypeId}); err != nil {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect pet type id"})
 		return
 	}
 
+	/*Проверка, что такой breed id существует*/
 	breedId, err := h.services.Breed.GetAll(models.BreedFilter{BreedId: input.BreedId})
 	if err != nil || breedId[0].PetTypeId != input.PetTypeId {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect breed id"})
@@ -39,7 +40,7 @@ func (h *Handler) createNewCard(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	fmt.Println(id)
+
 	input.UserId = id
 
 	err = h.services.PetCard.Create(input)
@@ -140,6 +141,7 @@ func (h *Handler) updateCard(c *gin.Context) {
 		return
 	}
 
+	/*Проверка, что такой pet card id существует*/
 	petCard, err := h.services.PetCard.GetAll(models.PetCardFilter{PetCardId: id})
 	if len(petCard) != 1 || err != nil {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect pet card id"})
@@ -152,6 +154,7 @@ func (h *Handler) updateCard(c *gin.Context) {
 		return
 	}
 
+	/*Проверка, что такой pet type id существует*/
 	if input.PetTypeId != nil {
 		if _, err := h.services.PetType.GetAll(models.PetTypeFilter{PetTypeId: *input.PetTypeId}); err != nil {
 			c.JSON(http.StatusBadRequest, statusResponse{"incorrect pet type id"})
@@ -159,6 +162,7 @@ func (h *Handler) updateCard(c *gin.Context) {
 		}
 	}
 
+	/*Проверка, что такой breed id существует*/
 	if input.BreedId != nil {
 		breedId, err := h.services.Breed.GetAll(models.BreedFilter{BreedId: *input.BreedId})
 		if err != nil || breedId[0].PetTypeId != *input.PetTypeId {
@@ -168,16 +172,25 @@ func (h *Handler) updateCard(c *gin.Context) {
 	}
 
 	userID := c.Request.Header.Get("userID")
+
 	if len(userID) == 0 {
 		c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
 		return
 	}
 
-	*input.UserId, err = uuid.Parse(userID)
+	parseUserID, err := uuid.Parse(userID)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
 		return
 	}
+
+	/*Проверка на то, что id из токена совпадает с id владельца карточки*/
+	if petCard[0].UserId != parseUserID {
+		newErrorResponse(c, http.StatusBadRequest, "not enough permissions to delete")
+		return
+	}
+
+	*input.UserId = parseUserID
 
 	if err := h.services.PetCard.Update(id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())

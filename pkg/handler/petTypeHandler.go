@@ -20,8 +20,8 @@ func (h *Handler) getAllTypes(c *gin.Context) {
 		filter.PetTypeId = PetTypeId
 	}
 
-	if query.Has("pet_type") {
-		filter.PetType = query.Get("pet_type")
+	if query.Has("petType") {
+		filter.PetType = query.Get("petType")
 	}
 
 	petTypeList, err := h.services.PetType.GetAll(filter)
