@@ -103,7 +103,7 @@ func gatewayURL(config *repository.Config) (*url.URL, error) {
 	var domain string
 	domain = config.Gateway.IP
 	gwURL, err := url.Parse(
-		protocol + "://" + domain + ":" + config.Gateway.Port + baseURL + "hello/")
+		protocol + "://" + domain + ":" + config.Gateway.Port + baseURL + "hello?service=pet&port=" + config.Listen.Port)
 	if err != nil {
 		return nil, errors.New("can't connect to ApiGateway")
 	}
@@ -117,9 +117,9 @@ func HelloAPIGateway(config *repository.Config) error {
 
 	domain = config.Gateway.IP
 	gatewayURL, err := url.Parse(
-		protocol + "://" + domain + ":" + config.Gateway.Port + baseURL + "hello/")
+		protocol + "://" + domain + ":" + config.Gateway.Port + baseURL + "hello")
 	if err != nil {
-		return errors.New("can't parse url for endpoint 'hello/'")
+		return errors.New("can't parse url for endpoint 'hello'")
 	}
 
 	info := &models.Hello{
