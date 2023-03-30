@@ -7,10 +7,10 @@ import (
 )
 
 type UpdateCardInput struct {
-	PetTypeId     *int       `json:"petTypeId"`
-	UserId        *uuid.UUID `json:"userId"`
+	PetTypeId     *int       `json:"petTypeID"`
+	UserId        *uuid.UUID `json:"userID"`
 	Name          *string    `json:"petName"`
-	BreedId       *int       `json:"breedId"`
+	BreedId       *int       `json:"breedID"`
 	Photo         *string    `json:"photo"`
 	BirthDate     *time.Time `json:"birthDate"`
 	Male          *bool      `json:"male"`

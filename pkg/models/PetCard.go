@@ -7,11 +7,11 @@ import (
 
 type PetCard struct {
 	Id            int       `json:"id" db:"id"`
-	PetTypeId     int       `json:"petTypeId" db:"pet_type_id" binding:"required"`
+	PetTypeId     int       `json:"petTypeID" db:"pet_type_id" binding:"required"`
 	PetTypeName   string    `json:"petType" db:"pet_type"`
-	UserId        uuid.UUID `json:"userId" db:"user_id"`
+	UserId        uuid.UUID `json:"userID" db:"user_id"`
 	Name          string    `json:"petName" db:"pet_name" binding:"required"`
-	BreedId       int       `json:"breedId" db:"breed_id" binding:"required"`
+	BreedId       int       `json:"breedID" db:"breed_id" binding:"required"`
 	BreedName     string    `json:"breed" db:"breed_name"`
 	Photo         string    `json:"photo" db:"photo"`
 	BirthDate     time.Time `json:"birthDate" db:"birth_date" binding:"required"`
