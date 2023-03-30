@@ -20,8 +20,8 @@ func (h *Handler) getAllBreeds(c *gin.Context) {
 		filter.BreedId = BreedId
 	}
 
-	if query.Has("petTypeId") {
-		petTypeId, err := strconv.Atoi(query.Get("petTypeId"))
+	if query.Has("petTypeID") {
+		petTypeId, err := strconv.Atoi(query.Get("petTypeID"))
 		if err != nil || petTypeId <= 0 {
 			newErrorResponse(c, http.StatusBadRequest, "invalid pet type id")
 			return

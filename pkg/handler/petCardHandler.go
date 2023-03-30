@@ -91,8 +91,8 @@ func (h *Handler) getAllCards(c *gin.Context) {
 		}
 	}
 
-	if query.Has("petTypeId") {
-		PetTypeId, err := strconv.Atoi(query.Get("petTypeId"))
+	if query.Has("petTypeID") {
+		PetTypeId, err := strconv.Atoi(query.Get("petTypeID"))
 		if err != nil || PetTypeId <= 0 {
 			newErrorResponse(c, http.StatusBadRequest, "invalid pet type id param")
 			return
@@ -100,8 +100,8 @@ func (h *Handler) getAllCards(c *gin.Context) {
 		filter.PetTypeId = PetTypeId
 	}
 
-	if query.Has("breedId") {
-		BreedId, err := strconv.Atoi(query.Get("breedId"))
+	if query.Has("breedID") {
+		BreedId, err := strconv.Atoi(query.Get("breedID"))
 		if err != nil || BreedId <= 0 {
 			newErrorResponse(c, http.StatusBadRequest, "invalid breed id param")
 			return
@@ -162,8 +162,8 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 		}
 	}
 
-	if query.Has("petTypeId") {
-		PetTypeId, err := strconv.Atoi(query.Get("petTypeId"))
+	if query.Has("petTypeID") {
+		PetTypeId, err := strconv.Atoi(query.Get("petTypeID"))
 		if err != nil || PetTypeId <= 0 {
 			newErrorResponse(c, http.StatusBadRequest, "invalid pet type id param")
 			return
@@ -171,8 +171,8 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 		filter.PetTypeId = PetTypeId
 	}
 
-	if query.Has("breedId") {
-		BreedId, err := strconv.Atoi(query.Get("breedId"))
+	if query.Has("breedID") {
+		BreedId, err := strconv.Atoi(query.Get("breedID"))
 		if err != nil || BreedId <= 0 {
 			newErrorResponse(c, http.StatusBadRequest, "invalid breed id param")
 			return
