@@ -40,7 +40,7 @@ func (h *Handler) getAllBreeds(c *gin.Context) {
 	}
 
 	if len(breedList) == 0 {
-		newErrorResponse(c, http.StatusBadRequest, "records not found")
+		newErrorResponse(c, http.StatusOK, "records not found")
 		return
 	}
 

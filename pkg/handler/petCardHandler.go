@@ -116,7 +116,7 @@ func (h *Handler) getAllCards(c *gin.Context) {
 	}
 
 	if len(petCardList) == 0 {
-		newErrorResponse(c, http.StatusBadRequest, "records not found")
+		newErrorResponse(c, http.StatusOK, "records not found")
 		return
 	}
 
@@ -187,7 +187,7 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 	}
 
 	if len(petCardList) == 0 {
-		newErrorResponse(c, http.StatusBadRequest, "records not found")
+		newErrorResponse(c, http.StatusOK, "records not found")
 		return
 	}
 
