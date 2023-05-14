@@ -154,9 +154,14 @@ func (h *Handler) getAllCards(c *gin.Context) {
 		var photos []PhotoResponse
 		originalPhoto := strings.Split(petCardList[i].Photo, ", ")
 		thumbnailPhoto := strings.Split(petCardList[i].ThumbnailPhoto, ", ")
-		for j := 0; j < len(originalPhoto); j++ {
-			photos = append(photos, PhotoResponse{ThumbnailPhoto: strings.TrimSpace(thumbnailPhoto[j]),
-				Photo: strings.TrimSpace(originalPhoto[j])})
+		for j := 0; j < len(originalPhoto) || j < len(thumbnailPhoto); j++ {
+			photos = append(photos, PhotoResponse{})
+			if j < len(thumbnailPhoto) {
+				photos[j].ThumbnailPhoto = strings.TrimSpace(thumbnailPhoto[j])
+			}
+			if j < len(originalPhoto) {
+				photos[j].Photo = strings.TrimSpace(originalPhoto[j])
+			}
 		}
 		resp = append(resp,
 			PetsResponse{
@@ -191,7 +196,7 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 		Name           string    `json:"petName"`
 		Gender         string    `json:"gender"`
 		BreedName      string    `json:"breed"`
-		ThumbnailPhoto []string  `json:"thumbnailPhoto"`
+		ThumbnailPhoto []string  `json:"photos"`
 		BirthDate      time.Time `json:"birthDate"`
 	}
 
@@ -281,9 +286,17 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 }
 
 func (h *Handler) updateCard(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+	var id int
+	query := c.Request.URL.Query()
+	if query.Has("id") {
+		cardID, err := strconv.Atoi(query.Get("id"))
+		id = cardID
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+			return
+		}
+	} else {
+		newErrorResponse(c, http.StatusBadRequest, "id not provided")
 		return
 	}
 
@@ -347,9 +360,17 @@ func (h *Handler) updateCard(c *gin.Context) {
 }
 
 func (h *Handler) deleteCard(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+	var id int
+	query := c.Request.URL.Query()
+	if query.Has("id") {
+		cardID, err := strconv.Atoi(query.Get("id"))
+		id = cardID
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+			return
+		}
+	} else {
+		newErrorResponse(c, http.StatusBadRequest, "id not provided")
 		return
 	}
 

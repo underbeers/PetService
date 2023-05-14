@@ -33,8 +33,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			petCards.POST("/new", h.createNewCard).OPTIONS("/new", h.createNewCard)
 			petCards.GET("", h.getAllCards).OPTIONS("", h.getAllCards)
 			petCards.GET("/main", h.getMainCardInfo).OPTIONS("/main", h.getMainCardInfo)
-			petCards.PUT("/update/:id", h.updateCard).OPTIONS("/update/:id", h.updateCard)
-			petCards.DELETE("/delete/:id", h.deleteCard).OPTIONS("/delete/:id", h.deleteCard)
+			petCards.PUT("/update", h.updateCard).OPTIONS("/update", h.updateCard)
+			petCards.DELETE("/delete", h.deleteCard).OPTIONS("/delete", h.deleteCard)
 
 		}
 

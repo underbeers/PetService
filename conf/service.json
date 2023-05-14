@@ -28,12 +28,12 @@
       "methods": ["GET", "OPTIONS"]
     },
     {
-      "url": "petCards/update/:id",
+      "url": "petCards/update",
       "protected": true,
       "methods": ["PUT", "OPTIONS"]
     },
     {
-      "url": "petCards/delete/:id",
+      "url": "petCards/delete",
       "protected": true,
       "methods": ["DELETE", "OPTIONS"]
     }
