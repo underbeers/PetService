@@ -6,6 +6,8 @@ import (
 	"github.com/underbeers/PetService/pkg/models"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 )
 
 func (h *Handler) createNewCard(c *gin.Context) {
@@ -24,7 +26,7 @@ func (h *Handler) createNewCard(c *gin.Context) {
 
 	/*Проверка, что такой breed id существует*/
 	breedId, err := h.services.Breed.GetAll(models.BreedFilter{BreedId: input.BreedId})
-	if err != nil || breedId[0].PetTypeId != input.PetTypeId {
+	if err != nil || len(breedId) == 0 || breedId[0].PetTypeId != input.PetTypeId {
 		c.JSON(http.StatusBadRequest, statusResponse{"incorrect breed id"})
 		return
 	}
@@ -53,6 +55,32 @@ func (h *Handler) createNewCard(c *gin.Context) {
 }
 
 func (h *Handler) getAllCards(c *gin.Context) {
+
+	type PhotoResponse struct {
+		ThumbnailPhoto string `json:"thumbnail"`
+		Photo          string `json:"original"`
+	}
+
+	type PetsResponse struct {
+		Id            int             `json:"id"`
+		PetTypeId     int             `json:"petTypeID"`
+		PetTypeName   string          `json:"petType"`
+		UserId        uuid.UUID       `json:"userID"`
+		Name          string          `json:"petName"`
+		BreedId       int             `json:"breedID"`
+		BreedName     string          `json:"breed"`
+		Photo         []PhotoResponse `json:"photos"`
+		BirthDate     time.Time       `json:"birthDate"`
+		Male          bool            `json:"male"`
+		Gender        string          `json:"gender"`
+		Color         string          `json:"color"`
+		Care          string          `json:"care"`
+		Character     string          `json:"petCharacter"`
+		Pedigree      string          `json:"pedigree"`
+		Sterilization bool            `json:"sterilization"`
+		Vaccinations  bool            `json:"vaccinations"`
+	}
+
 	query := c.Request.URL.Query()
 	filter := models.PetCardFilter{}
 
@@ -120,10 +148,53 @@ func (h *Handler) getAllCards(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, petCardList)
+	var resp []PetsResponse
+
+	for i := 0; i < len(petCardList); i++ {
+		var photos []PhotoResponse
+		originalPhoto := strings.Split(petCardList[i].Photo, ", ")
+		thumbnailPhoto := strings.Split(petCardList[i].ThumbnailPhoto, ", ")
+		for j := 0; j < len(originalPhoto); j++ {
+			photos = append(photos, PhotoResponse{ThumbnailPhoto: strings.TrimSpace(thumbnailPhoto[j]),
+				Photo: strings.TrimSpace(originalPhoto[j])})
+		}
+		resp = append(resp,
+			PetsResponse{
+				Id:            petCardList[i].Id,
+				PetTypeId:     petCardList[i].PetTypeId,
+				PetTypeName:   petCardList[i].PetTypeName,
+				UserId:        petCardList[i].UserId,
+				Name:          petCardList[i].Name,
+				BreedId:       petCardList[i].BreedId,
+				BreedName:     petCardList[i].BreedName,
+				Photo:         photos,
+				BirthDate:     petCardList[i].BirthDate,
+				Male:          petCardList[i].Male,
+				Gender:        petCardList[i].Gender,
+				Color:         petCardList[i].Color,
+				Care:          petCardList[i].Care,
+				Character:     petCardList[i].Character,
+				Pedigree:      petCardList[i].Pedigree,
+				Sterilization: petCardList[i].Sterilization,
+				Vaccinations:  petCardList[i].Vaccinations,
+			})
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
 
 func (h *Handler) getMainCardInfo(c *gin.Context) {
+
+	type PetsResponse struct {
+		Id             int       `json:"id"`
+		PetTypeName    string    `json:"petType"`
+		Name           string    `json:"petName"`
+		Gender         string    `json:"gender"`
+		BreedName      string    `json:"breed"`
+		ThumbnailPhoto []string  `json:"thumbnailPhoto"`
+		BirthDate      time.Time `json:"birthDate"`
+	}
+
 	query := c.Request.URL.Query()
 	filter := models.PetCardFilter{}
 
@@ -191,7 +262,22 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, petCardList)
+	var resp []PetsResponse
+
+	for i := 0; i < len(petCardList); i++ {
+		resp = append(resp,
+			PetsResponse{
+				Id:             petCardList[i].Id,
+				PetTypeName:    petCardList[i].PetTypeName,
+				Name:           petCardList[i].Name,
+				Gender:         petCardList[i].Gender,
+				BreedName:      petCardList[i].BreedName,
+				ThumbnailPhoto: strings.Split(petCardList[i].ThumbnailPhoto, ", "),
+				BirthDate:      petCardList[i].BirthDate,
+			})
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
 
 func (h *Handler) updateCard(c *gin.Context) {

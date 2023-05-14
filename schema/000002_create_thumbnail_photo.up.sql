@@ -1,0 +1,2 @@
+ALTER TABLE pet_card ADD COLUMN thumbnail_photo VARCHAR(2500);
+ALTER TABLE pet_card ALTER COLUMN photo TYPE VARCHAR(2500);

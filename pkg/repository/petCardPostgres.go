@@ -22,12 +22,12 @@ func (r *PetCardPostgres) Create(petCard models.PetCard) error {
 	if err != nil {
 		return err
 	}
-	createPetCardQuery := fmt.Sprintf("INSERT INTO %s (pet_type_id, user_id, pet_name, breed_id, photo, birth_date, "+
-		"male, color, care, pet_character, pedigree, sterilization, vaccinations) VALUES ($1, $2, $3, $4, $5, $6, $7, "+
-		"$8, $9, $10, $11, $12, $13)", petCardTable)
+	createPetCardQuery := fmt.Sprintf("INSERT INTO %s (pet_type_id, user_id, pet_name, breed_id, photo, "+
+		"thumbnail_photo, birth_date, male, color, care, pet_character, pedigree, sterilization, vaccinations) VALUES "+
+		"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)", petCardTable)
 	_, err = tx.Exec(createPetCardQuery, petCard.PetTypeId, petCard.UserId, petCard.Name, petCard.BreedId, petCard.Photo,
-		petCard.BirthDate, petCard.Male, petCard.Color, petCard.Care, petCard.Character, petCard.Pedigree,
-		petCard.Sterilization, petCard.Vaccinations)
+		petCard.ThumbnailPhoto, petCard.BirthDate, petCard.Male, petCard.Color, petCard.Care, petCard.Character,
+		petCard.Pedigree, petCard.Sterilization, petCard.Vaccinations)
 	if err != nil {
 		err := tx.Rollback()
 		if err != nil {
@@ -41,9 +41,10 @@ func (r *PetCardPostgres) Create(petCard models.PetCard) error {
 
 func createPetCardQuery(filter models.PetCardFilter) string {
 
-	query := fmt.Sprintf("SELECT pc.id, pc.pet_type_id, pc.user_id, pc.pet_name, pc.breed_id, pc.photo, pc.birth_date, "+
-		"pc.male, CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' END AS gender, pc.color, pc.care, "+
-		"pc.pet_character, pc.pedigree, pc.sterilization, pc.vaccinations, pt.pet_type, br.breed_name FROM %s pc ",
+	query := fmt.Sprintf("SELECT pc.id, pc.pet_type_id, pc.user_id, pc.pet_name, pc.breed_id, pc.photo, "+
+		"pc.thumbnail_photo, pc.birth_date, pc.male, CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' "+
+		"END AS gender, pc.color, pc.care, pc.pet_character, pc.pedigree, pc.sterilization, pc.vaccinations, "+
+		"pt.pet_type, br.breed_name FROM %s pc ",
 		petCardTable)
 
 	query += "INNER JOIN pet_type pt ON pc.pet_type_id = pt.id INNER JOIN breed br ON pc.breed_id = br.id "
@@ -96,7 +97,7 @@ func (r *PetCardPostgres) GetAll(filter models.PetCardFilter) ([]models.PetCard,
 
 func createMainCardInfoQuery(filter models.PetCardFilter) string {
 
-	query := fmt.Sprintf("SELECT pc.id, pc.pet_name, pc.photo, pc.birth_date, "+
+	query := fmt.Sprintf("SELECT pc.id, pc.pet_name, pc.thumbnail_photo, pc.birth_date, "+
 		"CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' END AS gender, pt.pet_type, br.breed_name "+
 		"FROM %s pc ",
 		petCardTable)
@@ -188,6 +189,12 @@ func (r *PetCardPostgres) Update(id int, input models.UpdateCardInput) error {
 	if input.Photo != nil {
 		setValues = append(setValues, fmt.Sprintf("photo=$%d", argId))
 		args = append(args, *input.Photo)
+		argId++
+	}
+
+	if input.ThumbnailPhoto != nil {
+		setValues = append(setValues, fmt.Sprintf("thumbnail_photo=$%d", argId))
+		args = append(args, *input.ThumbnailPhoto)
 		argId++
 	}
 
