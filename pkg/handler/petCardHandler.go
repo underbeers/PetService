@@ -195,7 +195,7 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 		Name           string    `json:"petName"`
 		Gender         string    `json:"gender"`
 		BreedName      string    `json:"breed"`
-		ThumbnailPhoto []string  `json:"photos"`
+		ThumbnailPhoto string    `json:"photo"`
 		BirthDate      time.Time `json:"birthDate"`
 	}
 
@@ -275,7 +275,7 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 				Name:           petCardList[i].Name,
 				Gender:         petCardList[i].Gender,
 				BreedName:      petCardList[i].BreedName,
-				ThumbnailPhoto: strings.Split(petCardList[i].ThumbnailPhoto, ", "),
+				ThumbnailPhoto: strings.Split(petCardList[i].ThumbnailPhoto, ", ")[0],
 				BirthDate:      petCardList[i].BirthDate,
 			})
 	}
