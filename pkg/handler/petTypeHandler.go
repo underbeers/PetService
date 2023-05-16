@@ -31,7 +31,8 @@ func (h *Handler) getAllTypes(c *gin.Context) {
 	}
 
 	if len(petTypeList) == 0 {
-		newErrorResponse(c, http.StatusOK, "records not found")
+		resp := make([]pet_service.PetType, 0)
+		c.JSON(http.StatusOK, resp)
 		return
 	}
 

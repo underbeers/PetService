@@ -143,12 +143,11 @@ func (h *Handler) getAllCards(c *gin.Context) {
 		return
 	}
 
-	if len(petCardList) == 0 {
-		newErrorResponse(c, http.StatusOK, "records not found")
-		return
-	}
-
 	var resp []PetsResponse
+
+	if len(petCardList) == 0 {
+		resp = make([]PetsResponse, 0)
+	}
 
 	for i := 0; i < len(petCardList); i++ {
 		var photos []PhotoResponse
@@ -262,12 +261,11 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 		return
 	}
 
-	if len(petCardList) == 0 {
-		newErrorResponse(c, http.StatusOK, "records not found")
-		return
-	}
-
 	var resp []PetsResponse
+
+	if len(petCardList) == 0 {
+		resp = make([]PetsResponse, 0)
+	}
 
 	for i := 0; i < len(petCardList); i++ {
 		resp = append(resp,
