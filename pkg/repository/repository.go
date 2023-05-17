@@ -19,6 +19,7 @@ type PetCard interface {
 	GetMain(filter models.PetCardFilter) ([]models.PetCardMainInfo, error)
 	Delete(id int) error
 	Update(id int, input models.UpdateCardInput) error
+	SetImage(id int, imageThumbnailLink, imageOriginLink string) error
 }
 
 type Repository struct {

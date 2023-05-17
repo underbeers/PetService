@@ -35,14 +35,13 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			petCards.GET("/main", h.getMainCardInfo).OPTIONS("/main", h.getMainCardInfo)
 			petCards.PUT("/update", h.updateCard).OPTIONS("/update", h.updateCard)
 			petCards.DELETE("/delete", h.deleteCard).OPTIONS("/delete", h.deleteCard)
-
+			petCards.POST("/image/set", h.setImage).OPTIONS("/image/set", h.setImage)
 		}
 
 		gwConnect := api.Group("endpoint-info")
 		{
 			gwConnect.GET("/", h.handleInfo).OPTIONS("/", h.handleInfo)
 		}
-
 	}
 
 	h.services.Router = router
