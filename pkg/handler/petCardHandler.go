@@ -149,12 +149,11 @@ func (h *Handler) getAllCards(c *gin.Context) {
 		return
 	}
 
-	if len(petCardList) == 0 {
-		newErrorResponse(c, http.StatusOK, "records not found")
-		return
-	}
-
 	var resp []PetsResponse
+
+	if len(petCardList) == 0 {
+		resp = make([]PetsResponse, 0)
+	}
 
 	for i := 0; i < len(petCardList); i++ {
 		var photos []PhotoResponse
@@ -202,7 +201,7 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 		Name           string    `json:"petName"`
 		Gender         string    `json:"gender"`
 		BreedName      string    `json:"breed"`
-		ThumbnailPhoto []string  `json:"photos"`
+		ThumbnailPhoto string    `json:"photo"`
 		BirthDate      time.Time `json:"birthDate"`
 	}
 
@@ -268,12 +267,11 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 		return
 	}
 
-	if len(petCardList) == 0 {
-		newErrorResponse(c, http.StatusOK, "records not found")
-		return
-	}
-
 	var resp []PetsResponse
+
+	if len(petCardList) == 0 {
+		resp = make([]PetsResponse, 0)
+	}
 
 	for i := 0; i < len(petCardList); i++ {
 		resp = append(resp,
@@ -283,7 +281,7 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 				Name:           petCardList[i].Name,
 				Gender:         petCardList[i].Gender,
 				BreedName:      petCardList[i].BreedName,
-				ThumbnailPhoto: strings.Split(petCardList[i].ThumbnailPhoto, ", "),
+				ThumbnailPhoto: strings.Split(petCardList[i].ThumbnailPhoto, ", ")[0],
 				BirthDate:      petCardList[i].BirthDate,
 			})
 	}

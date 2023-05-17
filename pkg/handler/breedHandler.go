@@ -40,7 +40,8 @@ func (h *Handler) getAllBreeds(c *gin.Context) {
 	}
 
 	if len(breedList) == 0 {
-		newErrorResponse(c, http.StatusOK, "records not found")
+		resp := make([]pet_service.Breed, 0)
+		c.JSON(http.StatusOK, resp)
 		return
 	}
 
