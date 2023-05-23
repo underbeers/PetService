@@ -1,0 +1,3 @@
+ALTER TABLE pet_card RENAME COLUMN origin_photo to photo;
+ALTER TABLE pet_card ALTER COLUMN photo TYPE VARCHAR(2500);
+ALTER TABLE pet_card ALTER COLUMN thumbnail_photo TYPE VARCHAR(2500);

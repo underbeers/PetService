@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	_ "strings"
 	"time"
 )
 
@@ -44,6 +45,9 @@ func (h *Handler) createNewCard(c *gin.Context) {
 	}
 
 	input.UserId = id
+
+	input.Photo = "{https://res.cloudinary.com/dojhrhddc/image/upload/v1684863033/pet_placeholder_rcf7iv.jpg}"
+	input.ThumbnailPhoto = "{https://res.cloudinary.com/dojhrhddc/image/upload/v1684864098/pet_placeholder_rcf7iv_i1lzt9.jpg}"
 
 	err = h.services.PetCard.Create(input)
 	if err != nil {
@@ -151,17 +155,21 @@ func (h *Handler) getAllCards(c *gin.Context) {
 
 	for i := 0; i < len(petCardList); i++ {
 		var photos []PhotoResponse
-		originalPhoto := strings.Split(petCardList[i].Photo, ", ")
-		thumbnailPhoto := strings.Split(petCardList[i].ThumbnailPhoto, ", ")
-		for j := 0; j < len(originalPhoto) || j < len(thumbnailPhoto); j++ {
-			photos = append(photos, PhotoResponse{})
-			if j < len(thumbnailPhoto) {
-				photos[j].ThumbnailPhoto = strings.TrimSpace(thumbnailPhoto[j])
-			}
-			if j < len(originalPhoto) {
-				photos[j].Photo = strings.TrimSpace(originalPhoto[j])
+
+		if len(petCardList[i].Photo) > 5 && len(petCardList[i].ThumbnailPhoto) > 5 {
+			originalPhoto := strings.Split(petCardList[i].Photo[1:len(petCardList[i].Photo)-1], ",")
+			thumbnailPhoto := strings.Split(petCardList[i].ThumbnailPhoto[1:len(petCardList[i].ThumbnailPhoto)-1], ",")
+			for j := 0; j < len(originalPhoto) || j < len(thumbnailPhoto); j++ {
+				photos = append(photos, PhotoResponse{})
+				if j < len(thumbnailPhoto) {
+					photos[j].ThumbnailPhoto = strings.TrimSpace(thumbnailPhoto[j])
+				}
+				if j < len(originalPhoto) {
+					photos[j].Photo = strings.TrimSpace(originalPhoto[j])
+				}
 			}
 		}
+
 		resp = append(resp,
 			PetsResponse{
 				Id:            petCardList[i].Id,
@@ -275,7 +283,7 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 				Name:           petCardList[i].Name,
 				Gender:         petCardList[i].Gender,
 				BreedName:      petCardList[i].BreedName,
-				ThumbnailPhoto: strings.Split(petCardList[i].ThumbnailPhoto, ", ")[0],
+				ThumbnailPhoto: strings.Split(petCardList[i].ThumbnailPhoto[1:len(petCardList[i].ThumbnailPhoto)-1], ", ")[0],
 				BirthDate:      petCardList[i].BirthDate,
 			})
 	}

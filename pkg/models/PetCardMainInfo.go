@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type PetCardMainInfo struct {
 	Id             int       `json:"id" db:"id"`

@@ -22,7 +22,7 @@ func (r *PetCardPostgres) Create(petCard models.PetCard) error {
 	if err != nil {
 		return err
 	}
-	createPetCardQuery := fmt.Sprintf("INSERT INTO %s (pet_type_id, user_id, pet_name, breed_id, photo, "+
+	createPetCardQuery := fmt.Sprintf("INSERT INTO %s (pet_type_id, user_id, pet_name, breed_id, origin_photo, "+
 		"thumbnail_photo, birth_date, male, color, care, pet_character, pedigree, sterilization, vaccinations) VALUES "+
 		"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)", petCardTable)
 	_, err = tx.Exec(createPetCardQuery, petCard.PetTypeId, petCard.UserId, petCard.Name, petCard.BreedId, petCard.Photo,
@@ -41,7 +41,7 @@ func (r *PetCardPostgres) Create(petCard models.PetCard) error {
 
 func createPetCardQuery(filter models.PetCardFilter) string {
 
-	query := fmt.Sprintf("SELECT pc.id, pc.pet_type_id, pc.user_id, pc.pet_name, pc.breed_id, pc.photo, "+
+	query := fmt.Sprintf("SELECT pc.id, pc.pet_type_id, pc.user_id, pc.pet_name, pc.breed_id, pc.origin_photo, "+
 		"pc.thumbnail_photo, pc.birth_date, pc.male, CASE pc.male WHEN True THEN 'Мальчик' WHEN False THEN 'Девочка' "+
 		"END AS gender, pc.color, pc.care, pc.pet_character, pc.pedigree, pc.sterilization, pc.vaccinations, "+
 		"pt.pet_type, br.breed_name FROM %s pc ",
@@ -183,18 +183,6 @@ func (r *PetCardPostgres) Update(id int, input models.UpdateCardInput) error {
 	if input.BreedId != nil {
 		setValues = append(setValues, fmt.Sprintf("breed_id=$%d", argId))
 		args = append(args, *input.BreedId)
-		argId++
-	}
-
-	if input.Photo != nil {
-		setValues = append(setValues, fmt.Sprintf("photo=$%d", argId))
-		args = append(args, *input.Photo)
-		argId++
-	}
-
-	if input.ThumbnailPhoto != nil {
-		setValues = append(setValues, fmt.Sprintf("thumbnail_photo=$%d", argId))
-		args = append(args, *input.ThumbnailPhoto)
 		argId++
 	}
 

@@ -11,7 +11,7 @@ type UpdateCardInput struct {
 	UserId         *uuid.UUID `json:"userID"`
 	Name           *string    `json:"petName"`
 	BreedId        *int       `json:"breedID"`
-	Photo          *string    `json:"photo"`
+	Photo          *string    `json:"origin_photo"`
 	ThumbnailPhoto *string    `json:"thumbnailPhoto"`
 	BirthDate      *time.Time `json:"birthDate"`
 	Male           *bool      `json:"male"`

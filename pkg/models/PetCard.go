@@ -13,7 +13,7 @@ type PetCard struct {
 	Name           string    `json:"petName" db:"pet_name" binding:"required"`
 	BreedId        int       `json:"breedID" db:"breed_id" binding:"required"`
 	BreedName      string    `json:"breed" db:"breed_name"`
-	Photo          string    `json:"photo" db:"photo"`
+	Photo          string    `json:"photo" db:"origin_photo"`
 	ThumbnailPhoto string    `json:"thumbnailPhoto" db:"thumbnail_photo"`
 	BirthDate      time.Time `json:"birthDate" db:"birth_date" binding:"required"`
 	Male           bool      `json:"male" db:"male"`
