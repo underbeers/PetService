@@ -158,6 +158,16 @@ func (r *PetCardPostgres) Delete(id int) error {
 	return err
 }
 
+func (r *PetCardPostgres) SetImage(id int, imageThumbnailLink, imageOriginLink string) error {
+	query := fmt.Sprintf("UPDATE %s SET origin_photo = array_append(origin_photo, $1) WHERE id = $2", petCardTable)
+	_, err := r.db.Exec(query, imageOriginLink, id)
+
+	query = fmt.Sprintf("UPDATE %s SET thumbnail_photo = array_append(thumbnail_photo, $1) WHERE id = $2", petCardTable)
+	_, err = r.db.Exec(query, imageThumbnailLink, id)
+
+	return err
+}
+
 func (r *PetCardPostgres) Update(id int, input models.UpdateCardInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)

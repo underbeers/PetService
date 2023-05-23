@@ -1,14 +1,20 @@
 package handler
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/underbeers/PetService/pkg/models"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
 	_ "strings"
 	"time"
+)
+
+const (
+	userIDAuth = "UserID"
 )
 
 func (h *Handler) createNewCard(c *gin.Context) {
@@ -359,6 +365,41 @@ func (h *Handler) updateCard(c *gin.Context) {
 
 	if err := h.services.PetCard.Update(id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, statusResponse{"ok"})
+}
+
+func (h *Handler) setImage(c *gin.Context) {
+	type Data struct {
+		Origin    string `json:"origin"`
+		Thumbnail string `json:"thumbnail"`
+	}
+
+	type Request struct {
+		StatusCode int  `json:"statusCode"`
+		Data       Data `json:"data"`
+		PetCardID  int  `json:"petCardID"`
+	}
+
+	req := &Request{}
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+	if err := json.Unmarshal(body, req); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+
+		return
+	}
+
+	err = h.services.PetCard.SetImage(req.PetCardID, req.Data.Thumbnail, req.Data.Origin)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+
 		return
 	}
 
