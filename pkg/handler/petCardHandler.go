@@ -373,7 +373,7 @@ func (h *Handler) updateCard(c *gin.Context) {
 
 func (h *Handler) setImage(c *gin.Context) {
 	type Data struct {
-		Origin    string `json:"origin"`
+		Original  string `json:"original"`
 		Thumbnail string `json:"thumbnail"`
 	}
 
@@ -396,7 +396,7 @@ func (h *Handler) setImage(c *gin.Context) {
 		return
 	}
 
-	err = h.services.PetCard.SetImage(req.PetCardID, req.Data.Thumbnail, req.Data.Origin)
+	err = h.services.PetCard.SetImage(req.PetCardID, req.Data.Thumbnail, req.Data.Original)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 
