@@ -165,6 +165,13 @@ func (h *Handler) getAllCards(c *gin.Context) {
 		if len(petCardList[i].Photo) > 5 && len(petCardList[i].ThumbnailPhoto) > 5 {
 			originalPhoto := strings.Split(petCardList[i].Photo[1:len(petCardList[i].Photo)-1], ",")
 			thumbnailPhoto := strings.Split(petCardList[i].ThumbnailPhoto[1:len(petCardList[i].ThumbnailPhoto)-1], ",")
+			//Если фото добавлено, то не учитываем дефолтное фото
+			if len(originalPhoto) > 1 {
+				originalPhoto = originalPhoto[1:]
+			}
+			if len(thumbnailPhoto) > 1 {
+				thumbnailPhoto = thumbnailPhoto[1:]
+			}
 			for j := 0; j < len(originalPhoto) || j < len(thumbnailPhoto); j++ {
 				photos = append(photos, PhotoResponse{})
 				if j < len(thumbnailPhoto) {
@@ -282,6 +289,10 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 	}
 
 	for i := 0; i < len(petCardList); i++ {
+		thumbnailPhoto := strings.Split(petCardList[i].ThumbnailPhoto[1:len(petCardList[i].ThumbnailPhoto)-1], ",")
+		if len(thumbnailPhoto) > 1 {
+			thumbnailPhoto = thumbnailPhoto[1:]
+		}
 		resp = append(resp,
 			PetsResponse{
 				Id:             petCardList[i].Id,
@@ -289,7 +300,7 @@ func (h *Handler) getMainCardInfo(c *gin.Context) {
 				Name:           petCardList[i].Name,
 				Gender:         petCardList[i].Gender,
 				BreedName:      petCardList[i].BreedName,
-				ThumbnailPhoto: strings.Split(petCardList[i].ThumbnailPhoto[1:len(petCardList[i].ThumbnailPhoto)-1], ", ")[0],
+				ThumbnailPhoto: thumbnailPhoto[0],
 				BirthDate:      petCardList[i].BirthDate,
 			})
 	}
