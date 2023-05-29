@@ -417,6 +417,53 @@ func (h *Handler) setImage(c *gin.Context) {
 	c.JSON(http.StatusOK, statusResponse{"ok"})
 }
 
+func (h *Handler) transferPet(c *gin.Context) {
+
+	userID := c.Request.Header.Get("userID")
+
+	if len(userID) == 0 {
+		c.JSON(http.StatusBadRequest, statusResponse{"invalid access token"})
+		return
+	}
+
+	parseUserID, err := uuid.Parse(userID)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
+		return
+	}
+
+	var input models.TransferPet
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	/*Проверка, что такой pet card id существует*/
+	petCard, err := h.services.PetCard.GetAll(models.PetCardFilter{PetCardId: input.Id})
+	if len(petCard) != 1 || err != nil {
+		c.JSON(http.StatusBadRequest, statusResponse{"incorrect pet card id"})
+		return
+	}
+
+	/*Проверка на то, что id из токена совпадает с id владельца карточки*/
+	if petCard[0].UserId != parseUserID {
+		newErrorResponse(c, http.StatusBadRequest, "not enough permissions to transfer pet card")
+		return
+	}
+
+	if petCard[0].UserId == input.NewOwnerID {
+		newErrorResponse(c, http.StatusBadRequest, "ID of new and current owners are the same")
+		return
+	}
+
+	if err := h.services.PetCard.TransferPet(input); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, statusResponse{"ok"})
+}
+
 func (h *Handler) deleteCard(c *gin.Context) {
 	var id int
 	query := c.Request.URL.Query()

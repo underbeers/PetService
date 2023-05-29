@@ -21,6 +21,7 @@ type PetCard interface {
 	Delete(id int) error
 	Update(id int, input models.UpdateCardInput) error
 	SetImage(id int, imageThumbnailLink, imageOriginLink string) error
+	TransferPet(input models.TransferPet) error
 }
 
 type Service struct {

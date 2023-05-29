@@ -36,6 +36,11 @@
       "url": "petCards/delete",
       "protected": true,
       "methods": ["DELETE", "OPTIONS"]
+    },
+    {
+      "url": "petCards/transfer",
+      "protected": true,
+      "methods": ["POST", "OPTIONS"]
     }
   ]
 }

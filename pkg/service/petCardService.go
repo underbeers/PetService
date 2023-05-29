@@ -39,3 +39,7 @@ func (s *PetCardService) Update(id int, input models.UpdateCardInput) error {
 func (s *PetCardService) SetImage(id int, imageThumbnailLink, imageOriginLink string) error {
 	return s.repo.SetImage(id, imageThumbnailLink, imageOriginLink)
 }
+
+func (s *PetCardService) TransferPet(input models.TransferPet) error {
+	return s.repo.TransferPet(input)
+}
