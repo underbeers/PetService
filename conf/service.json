@@ -41,6 +41,11 @@
       "url": "petCards/transfer",
       "protected": true,
       "methods": ["POST", "OPTIONS"]
+    },
+    {
+      "url": "petCards/image/set",
+      "protected": false,
+      "methods": ["POST", "OPTIONS"]
     }
   ]
 }
